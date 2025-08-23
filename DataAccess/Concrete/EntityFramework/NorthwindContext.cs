@@ -22,6 +22,7 @@ namespace DataAccess.Concrete.EntityFramework
         public DbSet<Product> Products { get; set; }     //Veritabanındaki Products tablosu
         public DbSet<Category> Categories { get; set; }  //Veritabanındaki Categories tablosu
         public DbSet<Customer> Customers { get; set; }  // Veritabanındaki Customers tablosu
+        public DbSet<Order> Orders { get; set; }  // Veritabanındaki Orders tablosu
          
     }
 }
