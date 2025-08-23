@@ -1,5 +1,6 @@
 ﻿using DataAccess.Abstract;
 using Entities.Concrete;
+using Entities.Concrete.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -86,6 +87,11 @@ namespace DataAccess.Concrete.InMemory  //“Veri erişim” katmanının somut 
         }
 
         public Product Get(Expression<Func<Product, bool>> filter)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<ProductDetailDto> GetProductDetails()
         {
             throw new NotImplementedException();
         }
