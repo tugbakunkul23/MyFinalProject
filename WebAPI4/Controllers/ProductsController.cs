@@ -22,14 +22,20 @@ namespace WebAPI4.Controllers
             _productService = productService;
         }
 
-        [HttpGet]  //Bu method’un HTTP GET isteğine cevap verdiğini belirtir.
-        public List<Product> Get()
+        [HttpGet("getall")]  //Bu method’un HTTP GET isteğine cevap verdiğini belirtir.
+        public IActionResult Get()
         {
             //Dependency chain--bağımlılık zinciri
             var result = _productService.GetAll(); //İş katmanına gidip tüm ürünleri getirir.
-            return result.Data;  //genellikle bir IDataResult<List<Product>> döner, yani hem veri hem işlem sonucu mesajı içerir. Biz sadece veriyi (Data) döndürüyoruz.
 
+            if (result.Success)
+            {
+                return Ok(result.Data);  // Başarılıysa 200 OK + ürün listesini döndürür
+            }
 
+            return BadRequest(result.Message); // Başarısızsa 400 BadRequest + hata mesajını döndürür
+
+            //return result.Data;  //genellikle bir IDataResult<List<Product>> döner, yani hem veri hem işlem sonucu mesajı içerir. Biz sadece veriyi (Data) döndürüyoruz.
 
 
 
@@ -40,5 +46,31 @@ namespace WebAPI4.Controllers
             //    new Product{ProductId=2, ProductName="Armut" },
             //};
         }
+
+        [HttpGet("getbyid")]
+        public IActionResult Get(int id)
+        {
+            var result = _productService.GetById(id);
+            if (result.Success)
+            {
+                return Ok(result.Data);
+            }
+
+            return BadRequest(result);
+        }
+
+
+        [HttpPost("add")]
+        public IActionResult Post(Product product)  //Product product → Gönderilen ürün bilgisi burada parametre olarak alınır.
+        {
+            var result = _productService.Add(product);  //İş katmanında ürünü ekleme işlemi yapılır.
+            if (result.Success)
+            {
+                return Ok(result);   //eğer başaşrılıysa 200 OK döner.
+            }
+            return BadRequest(result);  //başarısızsa 400 Bad Request ve hata detayını döner.
+        }
+
+
     }
 }
