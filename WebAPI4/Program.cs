@@ -7,6 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+//Autofac, Ninject, CastleWindsor, StructureMap, LightInject, DryInject-->IoC container
+//AOP
 builder.Services.AddControllers();
 // Dependency Injection kayýtlarý
 builder.Services.AddSingleton<IProductService, ProductManager>();
