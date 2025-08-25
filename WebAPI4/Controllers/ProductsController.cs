@@ -56,7 +56,7 @@ namespace WebAPI4.Controllers
                 return Ok(result.Data);
             }
 
-            return BadRequest(result);
+            return BadRequest(result); 
         }
 
 
