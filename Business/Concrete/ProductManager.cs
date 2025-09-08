@@ -4,6 +4,7 @@ using Business.Constants;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Validation;
 using Core.CrossCuttingConcerns.Validation;
+using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using DataAccess.Concrete.InMemory;
@@ -23,28 +24,48 @@ namespace Business.Concrete
     public class ProductManager : IProductService
     {
         IProductDal _productDal;
+        //ICategoryDal _categoryDal;
+        ICategoryService _categoryService;
 
-        public ProductManager(IProductDal productDal)
+        public ProductManager(IProductDal productDal,ICategoryService categoryService)
         {
             _productDal = productDal;
+            _categoryService = categoryService;
+            //_categoryDal = categoryDal;  parantez içinde ICategoryDal categoryDal eklemiştik.
         }
 
-        //[ValidationAspect(typeof(ProductValidator))]
+        [ValidationAspect(typeof(ProductValidator))]
         public IResult Add(Product product)
         {
 
             //business codes
             //validation
 
-            if (CheckIfProductCountOfCategoryCorrect(product.CategoryId).Success)
-            {
-                _productDal.Add(product);
+            //aynı isimde ürün eklenemez
+            //Eğer mevcut kategori sayısı 15 i geçtiyse sisteme yeni ürün eklenemez.
+            IResult result = BusinessRules.Run(CheckIfProductNameExists(product.ProductName),
+                CheckIfProductCountOfCategoryCorrect(product.CategoryId), CheckIfCategoryLimitExceded());
 
-                return new SuccessResult(Messages.ProductAdded);
+            if (result != null)
+            {
+                return result;
             }
-            return new ErrorResult();
+
+            _productDal.Add(product);
+
+            return new SuccessResult(Messages.ProductAdded);
+
+            //if (CheckIfProductCountOfCategoryCorrect(product.CategoryId).Success)
+            //{
+            //    if (CheckIfProductNameExists(product.ProductName).Success)
+            //    {
+                    
+            //    }
+                
+            //}
+            //return new ErrorResult();
             
-            ValidationTool.Validate(new ProductValidator(), product);
+            //ValidationTool.Validate(new ProductValidator(), product);
 
             
         }
@@ -98,10 +119,31 @@ namespace Business.Concrete
         {
             //bir kategoride en fazla 15 ürün olabilir
             //Select count(*) from products where categoryId=1
-            var result = _productDal.GetAll(product => product.CategoryId == product.CategoryId).Count;
+            var result = _productDal.GetAll(p => p.CategoryId == p.CategoryId).Count;
             if (result > 15)
             {
                 return new ErrorResult(Messages.ProductCountOfCategoryError);
+            }
+            return new SuccessResult();
+        }
+
+        private IResult CheckIfProductNameExists(string productName)
+        {
+          
+            var result = _productDal.GetAll(p => p.ProductName == productName).Any();  //any-> var mı yok mu diye bakar.
+            if (result)
+            {
+                return new ErrorResult(Messages.CategoryLimitExceded);
+            }
+            return new SuccessResult();
+        }
+
+        private IResult CheckIfCategoryLimitExceded()
+        {
+            var result = _categoryService.GetAll();
+            if (result.Data.Count > 15)
+            {
+                return new ErrorResult(Messages.CategoryLimitExceded);
             }
             return new SuccessResult();
         }

@@ -17,10 +17,7 @@ namespace Core.Utilities.Interceptors
             return classAttributes.OrderBy(x => x.Priority).ToArray();
         }
 
-        public Castle.DynamicProxy.IInterceptor[] SelectInterceptors(Type type, MethodInfo method, Castle.DynamicProxy.IInterceptor[] interceptors)
-        {
-            throw new NotImplementedException();
-        }
+       
     }
 
 
