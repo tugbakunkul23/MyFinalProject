@@ -18,7 +18,10 @@ namespace ConsoleUI
         }
         private static void CategoryTest()
         {
-            CategoryManager categoryManager = new CategoryManager(new EfCategoryDal());
+            NorthwindContext context = new NorthwindContext();
+            EfCategoryDal categoryDal = new EfCategoryDal(context);
+
+            CategoryManager categoryManager = new CategoryManager(categoryDal);
             foreach (var category in categoryManager.GetAll().Data)
             {
                 Console.WriteLine(category.CategoryName);
@@ -26,8 +29,15 @@ namespace ConsoleUI
         }
         private static void ProductTest()
         {
+            NorthwindContext context = new NorthwindContext();
+            EfProductDal productDal = new EfProductDal(context);
+            EfCategoryDal categoryDal = new EfCategoryDal(context);
+
+            CategoryManager categoryManager = new CategoryManager( categoryDal);
+            ProductManager productManager = new ProductManager( productDal, categoryManager);
+
             //Product Test()
-            ProductManager productManager = new(new EfProductDal(), new CategoryManager(new EfCategoryDal()));
+            //ProductManager productManager = new(new EfProductDal(), new CategoryManager(new EfCategoryDal()));
 
             var result = productManager.GetProductDetails();
 

@@ -15,8 +15,12 @@ namespace DataAccess.Concrete.EntityFramework
     //Veritabanı tablolarını doğrudan dışarıya açmak yerine, sadece ihtiyacımız olan alanları taşıyan özel bir sınıftır.
     //Yani DTO = Veri taşıma sınıfı ✅
     //NuGet
-    public class EfProductDal : EfEntityRepositoryBase<Product, NorthwindContext>, IProductDal
+    public class EfProductDal : EfEntityRepositoryBase<Product>, IProductDal
     {
+        public EfProductDal(DbContext dbContext) : base(dbContext)
+        {
+        }
+
         public List<ProductDetailDto> GetProductDetails()
         {
             using (NorthwindContext context=new NorthwindContext())
