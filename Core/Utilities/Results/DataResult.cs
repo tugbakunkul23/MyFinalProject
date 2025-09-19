@@ -16,6 +16,8 @@ namespace Core.Utilities.Results
         public DataResult(T data,bool success, string message) : base(success, message)
         {
             Data = data;    //Data=data;-> gelen data atanır.
+            Success = success;
+            Message = message;
         }
 
         //Mesaj vermek istemiyorsak bu constructor’u kullanıyoruz.
@@ -26,5 +28,7 @@ namespace Core.Utilities.Results
         }
 
         public T Data { get; } //Generic tip (T) şeklinde veri taşır.Örneğin T = Product olabilir, ya da List<Product> olabilir.
+        public bool Success { get; set; }
+        public string Message { get; set; }
     }
 }

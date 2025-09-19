@@ -26,11 +26,14 @@ namespace WebAPI4.Controllers
         public IActionResult Get()
         {
             //Dependency chain--bağımlılık zinciri
+
+            Thread.Sleep(1000); //İstek atıldığında 5 saniye bekletir. (Simülasyon amaçlı)
+
             var result = _productService.GetAll(); //İş katmanına gidip tüm ürünleri getirir.
 
             if (result.Success)
             {
-                return Ok(result.Data);  // Başarılıysa 200 OK + ürün listesini döndürür
+                return Ok(result);  // Başarılıysa 200 OK + ürün listesini döndürür ---result.Data idi data sildim
             }
 
             return BadRequest(result.Message); // Başarısızsa 400 BadRequest + hata mesajını döndürür
